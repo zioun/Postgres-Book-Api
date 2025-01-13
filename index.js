@@ -1,4 +1,7 @@
 const express = require('express');
+const { v4: uuidv4 } = require('uuid');
+
+const pool = require('./db');
 const app = express();  
 const PORT = 3001;
 
@@ -30,11 +33,18 @@ app.get('/books/:id', async (req, res) => {
 app.post('/books', async (req, res) => {
     try {
         const { name, description } = req.body;
-        res.status(201).json({ message: `Book was created : ${name}, ${description}` });
+        const id = uuidv4();
+        // inserting book data into database
+        const newBook = await pool.query('INSERT INTO book (id, name, description) VALUES ($1, $2, $3) RETURNING *',[id, name, description]);
+
+        res.status(201).json({ message: `Book was created`, data: newBook.rows });
     } catch (error) {
         res.send({ error: error.message });
     }
 });
+
+
+
 // Put / books /: id -> update a book
 app.put('/books/:id', async (req, res) => {
     try {
