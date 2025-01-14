@@ -15,11 +15,13 @@ app.listen(PORT, () => {
 // Get / books -> return all the books
 app.get('/books', async (req, res) => {
     try {
-        res.status(200).json({ message: 'All books returned' });
+        const books = await pool.query('SELECT * FROM book'); // getting all books from database
+        res.status(200).json({ message: 'All books returned', data: books.rows });
     } catch (error) {
         res.send({ error: error.message });
     }
 });
+
 // Get / books /: id -> return a single book
 app.get('/books/:id', async (req, res) => {
     try {
@@ -29,6 +31,7 @@ app.get('/books/:id', async (req, res) => {
         res.send({ error: error.message });
     }
 });
+
 // Post / books -> add a new book
 app.post('/books', async (req, res) => {
     try {

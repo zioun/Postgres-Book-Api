@@ -1,3 +1,4 @@
+-- create database
 CREATE DATABASE bookDB;
 
 -- create table book
